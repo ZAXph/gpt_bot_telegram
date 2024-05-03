@@ -1,5 +1,6 @@
-from config import expletives, TABLE_NAME_WORD_EXPLETIVES, WORD_EXPLETIVES_TABLE_CREATE, LOGS
-from repository import DataBase
+from config import expletives, LOGS
+from db.schema import TABLE_NAME_WORD_EXPLETIVES, WORD_EXPLETIVES_TABLE_CREATE
+from db.repository import DataBase
 from string import punctuation
 import logging
 
@@ -36,7 +37,7 @@ def top_user_words(values):
             del words[key]
         return result
     except ValueError:
-        logging.error(text)
+        logging.warning("У пользователя нету 5 разных слов паразитов")
         return result
 
 

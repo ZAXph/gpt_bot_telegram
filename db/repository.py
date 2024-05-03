@@ -1,5 +1,6 @@
+import logging
 import sqlite3
-from config import DB_NAME
+from db.schema import DB_NAME
 
 
 class DataBase:
@@ -9,28 +10,20 @@ class DataBase:
         self.CREATE_TABLE = CREATE_TABLE
 
     def execute_query(self, query, data=None):
-        """
-        Функция для выполнения запроса к базе данных.
-        Принимает имя файла базы данных, SQL-запрос и опциональные данные для вставки.
-        """
         try:
-            connection = sqlite3.connect(self.DB_NAME)
-            cursor = connection.cursor()
+            with sqlite3.connect(self.DB_NAME) as connection:
+                cursor = connection.cursor()
 
-            if data:
-                cursor.execute(query, data)
-            else:
-                cursor.execute(query)
-            cursor = cursor.fetchall()
-            connection.commit()
-            connection.close()
-            return cursor
+                if data:
+                    cursor.execute(query, data)
+                else:
+                    cursor.execute(query)
+                cursor = cursor.fetchall()
+                connection.commit()
+                return cursor
 
         except sqlite3.Error as e:
-            print("Ошибка при выполнении запроса:", e)
-
-        finally:
-            connection.close()
+            logging.error("Ошибка при выполнении запроса:", e)
 
     def create_table(self):
         sql_query = self.CREATE_TABLE

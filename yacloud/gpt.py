@@ -1,7 +1,8 @@
 import logging
 import requests
-from config import IAM_TOKEN, FOLDER_ID, LOGS, MAX_MODEL_TOKEN, TABLE_NAME_MESSAGE, MESSAGE_TABLE_CREATE
-from repository import DataBase
+from config import IAM_TOKEN, FOLDER_ID, LOGS, MAX_MODEL_TOKEN
+from db.schema import TABLE_NAME_MESSAGE, MESSAGE_TABLE_CREATE
+from db.repository import DataBase
 
 logging.basicConfig(filename=LOGS, level=logging.ERROR,
                     format="%(asctime)s FILE: %(filename)s IN: %(funcName)s MESSAGE: %(message)s", filemode="w")
@@ -14,7 +15,6 @@ def prompt_create(user_id):
     promt = []
     for msg in message:
         promt.append({"role": msg[0], "text": msg[1]})
-    print(promt)
     return promt
 
 

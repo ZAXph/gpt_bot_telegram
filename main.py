@@ -1,11 +1,12 @@
 from telebot import TeleBot
 from validators import *
-from speachkit import *
-from gpt import ask_gpt
+from yacloud.speachkit import *
+from yacloud.gpt import ask_gpt
 import logging
-from config import TOKEN, TABLE_NAME_USERS, USERS_TABLE_CREATE, \
-    TABLE_NAME_MESSAGE, MESSAGE_TABLE_CREATE, LOGS, MAX_USERS, TABLE_NAME_WORD_EXPLETIVES, WORD_EXPLETIVES_TABLE_CREATE
+from config import TOKEN, LOGS, MAX_USERS
 from word_expletives import count_word_expletives, top_user_words, text_create
+from db.repository import DataBase
+from db.schema import TABLE_NAME_USERS, USERS_TABLE_CREATE, TABLE_NAME_MESSAGE, MESSAGE_TABLE_CREATE, TABLE_NAME_WORD_EXPLETIVES, WORD_EXPLETIVES_TABLE_CREATE
 
 bot = TeleBot(token=TOKEN)
 table_users = DataBase(TABLE_NAME_USERS, USERS_TABLE_CREATE)
@@ -99,7 +100,6 @@ def processing_voice(message):
 @bot.message_handler(commands=["start"])
 def start_bot(message):
     bot.send_message(chat_id=message.chat.id,
-
                      text="Привет! Доступна команда:\n/tts - После написания команды, отправь боту текст и он его озвучит.")
 
 
