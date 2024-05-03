@@ -153,36 +153,37 @@ def handler_voice(message):
         file = bot.download_file(file_info.file_path)  # скачиваем голосовое сообщение
         success, text = speech_to_text(file)
         if success:
-            table_users.update_data(message.from_user.id, "blocks", amount_blocks)
-            table_message.add_data(message.from_user.id, "role", "message", "user", text)
-            count_word_expletives(message.from_user.id, text)
-            success, symbols = is_gpt_symbol_limit(message, text)
-            if success:
-                success, resp, tokens = ask_gpt(message.from_user.id)
-                if not success:
-                    logging.error(resp)
-                    bot.send_message(chat_id=message.chat.id, text="YaGPT оффлайн")
-                    return
-                table_message.add_data(message.from_user.id, "role", "message", "assistant", resp)
-                table_users.update_data(message.from_user.id, "gpt_tokens", symbols + tokens)
-                success, len_text = is_tts_symbol_limit(message, resp)
-                if not success:
-                    logging.warning("Кончились или превышены токены")
-                    bot.send_message(chat_id=message.chat.id, text=len_text)
-                else:
-                    success, response = text_to_speech(resp)
-                    if success:
-                        table_users.update_data(message.from_user.id, "tokens", len_text)
-                        bot.send_voice(chat_id=message.chat.id, voice=response)
-                    else:
-                        logging.error(response)
-                        bot.send_message(chat_id=message.chat.id, text=response)
-            else:
-                logging.warning("Кончились или превышены gpt-токены")
-                bot.send_message(chat_id=message.chat.id, text=symbols)
+            processing_handler_voice(message, text, amount_blocks)
+
+
+def processing_handler_voice(message, text, amount_blocks):
+    table_users.update_data(message.from_user.id, "blocks", amount_blocks)
+    table_message.add_data(message.from_user.id, "role", "message", "user", text)
+    count_word_expletives(message.from_user.id, text)
+    success, symbols = is_gpt_symbol_limit(message, text)
+    if success:
+        success, resp, tokens = ask_gpt(message.from_user.id)
+        if not success:
+            logging.error(resp)
+            bot.send_message(chat_id=message.chat.id, text="YaGPT оффлайн")
+            return
+        table_message.add_data(message.from_user.id, "role", "message", "assistant", resp)
+        table_users.update_data(message.from_user.id, "gpt_tokens", symbols + tokens)
+        success, len_text = is_tts_symbol_limit(message, resp)
+        if not success:
+            logging.warning("Кончились или превышены токены")
+            bot.send_message(chat_id=message.chat.id, text=len_text)
         else:
-            logging.error(text)
-            bot.send_message(chat_id=message.chat.id, text=text)
+            success, response = text_to_speech(resp)
+            if success:
+                table_users.update_data(message.from_user.id, "tokens", len_text)
+                bot.send_voice(chat_id=message.chat.id, voice=response)
+            else:
+                logging.error(response)
+                bot.send_message(chat_id=message.chat.id, text=response)
+    else:
+        logging.warning("Кончились или превышены gpt-токены")
+        bot.send_message(chat_id=message.chat.id, text=symbols)
 
 
 @bot.message_handler(content_types=['text'])

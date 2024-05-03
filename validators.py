@@ -49,7 +49,6 @@ def is_tts_symbol_limit(message, text):
 
 def is_gpt_symbol_limit(message, text):
     text_symbols = count_gpt_tokens([{'role': 'user', 'text': text}])
-    print(text_symbols)
 
     # Функция из БД для подсчёта всех потраченных пользователем символов
     all_symbols = table_users.get_data("gpt_tokens", message.from_user.id)[0][0] + text_symbols

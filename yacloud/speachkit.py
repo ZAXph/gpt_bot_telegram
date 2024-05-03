@@ -1,6 +1,8 @@
 import requests
-from config import VOICE, IAM_TOKEN, FOLDER_ID, URL_TTS
+from config import VOICE, FOLDER_ID, URL_TTS
+from creds import get_creds
 
+IAM_TOKEN = get_creds()
 
 def speech_to_text(data):
     # Указываем параметры запроса

@@ -1,8 +1,11 @@
 import logging
 import requests
-from config import IAM_TOKEN, FOLDER_ID, LOGS, MAX_MODEL_TOKEN
+from config import FOLDER_ID, LOGS, MAX_MODEL_TOKEN
 from db.schema import TABLE_NAME_MESSAGE, MESSAGE_TABLE_CREATE
 from db.repository import DataBase
+from creds import get_creds
+
+IAM_TOKEN = get_creds()
 
 logging.basicConfig(filename=LOGS, level=logging.ERROR,
                     format="%(asctime)s FILE: %(filename)s IN: %(funcName)s MESSAGE: %(message)s", filemode="w")

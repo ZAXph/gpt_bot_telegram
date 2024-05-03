@@ -1,5 +1,12 @@
-IAM_TOKEN = "t1.9euelZrLi8mNmoqRnpDJyZGYlZGLm-3rnpWamMyalJebnZOKxsyVypOajJTl9PdeYytO-e9MUhiK3fT3HhIpTvnvTFIYis3n9euelZqejceLko-KlY6YiYqZm42OnO_8xeuelZqejceLko-KlY6YiYqZm42OnL3rnpWalYvIyZuUm8qZz82Kk4_LmJ213oac0ZyQko-Ki5rRi5nSnJCSj4qLmtKSmouem56LntKMng.4L2id3Dagtmj5O1nRR2eGtKxyUmbghM7djwTcSL39TtLMXV-qA91Q06ogeiypukKhLKmq1MDVBq0OFD7ic6RBA"
-FOLDER_ID = "b1gn1kghpq4rvsp4e2h1"
+import os
+from dotenv import load_dotenv
+
+
+load_dotenv()
+
+TOKEN = os.getenv('TOKEN')
+FOLDER_ID = os.getenv('FOLDER_ID')
+IAM_TOKEN_PATH = "iam_token.txt"
 
 MAX_USER_STT_BLOCKS = 10
 MAX_STT_DURATION = 30
@@ -10,7 +17,6 @@ MAX_USERS = 5
 MAX_TOKENS_USER_GPT = 100
 MAX_TOKENS_USER_GPT_ALL = 1000
 
-TOKEN = "6815594086:AAFmwexlJBjfNt8xinJKVhUz2613ND2opX0"
 
 URL_TTS = 'https://tts.api.cloud.yandex.net/speech/v1/tts:synthesize'
 VOICE = 'filipp'
