@@ -1,4 +1,4 @@
-DB_NAME = 'data_base.db'
+DB_NAME = '/home/student/data_base.db'
 
 TABLE_NAME_USERS = 'users'
 USERS_TABLE_CREATE = f"""CREATE TABLE IF NOT EXISTS {TABLE_NAME_USERS} (

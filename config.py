@@ -5,7 +5,7 @@ load_dotenv()
 
 TOKEN = os.getenv('TOKEN')
 FOLDER_ID = os.getenv('FOLDER_ID')
-IAM_TOKEN_PATH = "iam_token.txt"
+IAM_TOKEN_PATH = "/home/student/iam_token.txt"
 
 MAX_USER_STT_BLOCKS = 10
 MAX_STT_DURATION = 30
@@ -19,7 +19,7 @@ MAX_TOKENS_USER_GPT_ALL = 1000
 URL_TTS = 'https://tts.api.cloud.yandex.net/speech/v1/tts:synthesize'
 VOICE = 'filipp'
 
-LOGS = "log_file.txt"
+LOGS = "/home/student/log_file.txt"
 
 expletives = ['типа', 'как бы', 'итак', 'короче', 'таки', 'ну', 'вот', 'честно', 'грубо', 'мягко',
               'собственно говоря', 'на самом деле', 'в общем', 'прикинь',
