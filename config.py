@@ -7,6 +7,7 @@ TOKEN = os.getenv('TOKEN')
 FOLDER_ID = os.getenv('FOLDER_ID')
 IAM_TOKEN_PATH = "iam_token.txt"
 TOKEN = "6815594086:AAFmwexlJBjfNt8xinJKVhUz2613ND2opX0"
+FOLDER_ID = "b1gn1kghpq4rvsp4e2h1"
 
 MAX_USER_STT_BLOCKS = 10
 MAX_STT_DURATION = 30
