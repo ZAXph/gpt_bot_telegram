@@ -4,6 +4,7 @@ from creds import get_creds
 
 IAM_TOKEN = get_creds()
 
+
 def speech_to_text(data):
     # Указываем параметры запроса
     params = "&".join([
@@ -17,9 +18,9 @@ def speech_to_text(data):
         'Authorization': f'Bearer {IAM_TOKEN}',
     }
 
-     # Выполняем запрос
+    # Выполняем запрос
     response = requests.post(
-    f"https://stt.api.cloud.yandex.net/speech/v1/stt:recognize?{params}",
+        f"https://stt.api.cloud.yandex.net/speech/v1/stt:recognize?{params}",
         headers=headers,
         data=data
     )
