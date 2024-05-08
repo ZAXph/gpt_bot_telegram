@@ -13,6 +13,7 @@ TABLE_NAME_MESSAGE = 'message'
 MESSAGE_TABLE_CREATE = f"""CREATE TABLE IF NOT EXISTS {TABLE_NAME_MESSAGE} (
             id INTEGER PRIMARY KEY,
             user_id INTEGER,
+            date INTEGER,
             role TEXT,
             message TEXT,
             FOREIGN KEY (user_id) REFERENCES users (user_id)

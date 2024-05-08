@@ -4,6 +4,9 @@ from validators import is_stt_block_limit, is_tts_symbol_limit, \
 from yacloud.speachkit import speech_to_text, text_to_speech
 from yacloud.gpt import ask_gpt
 import logging
+from time import time, sleep
+from threading import Thread
+import schedule
 from config import TOKEN, LOGS, MAX_USERS
 from word_expletives import count_word_expletives, top_user_words, text_create
 from db.repository import DataBase
@@ -17,7 +20,6 @@ table_word_expletives = DataBase(TABLE_NAME_WORD_EXPLETIVES, WORD_EXPLETIVES_TAB
 table_users.create_table()
 table_message.create_table()
 table_word_expletives.create_table()
-
 
 logging.basicConfig(
     level=logging.WARNING,
@@ -127,7 +129,7 @@ def processing_text(message):
     else:
         success, response = text_to_speech(message.text)
         if success:
-            table_users.update_data(message.from_user.id, "tokens",  len_text)
+            table_users.update_data(message.from_user.id, "tokens", len_text)
             bot.send_voice(chat_id=message.chat.id, voice=response)
             bot.send_message(chat_id=message.chat.id, text="Новый запрос: /tts")
         else:
@@ -160,7 +162,7 @@ def handler_voice(message):
 
 def processing_handler_voice(message, text, amount_blocks):
     table_users.update_data(message.from_user.id, "blocks", amount_blocks)
-    table_message.add_data(message.from_user.id, "role", "message", "user", text)
+    table_message.add_data_message(message.from_user.id, time(), "user", text)
     count_word_expletives(message.from_user.id, text)
     success, symbols = is_gpt_symbol_limit(message, text)
     if success:
@@ -169,7 +171,7 @@ def processing_handler_voice(message, text, amount_blocks):
             logging.error(resp)
             bot.send_message(chat_id=message.chat.id, text="YaGPT оффлайн")
             return
-        table_message.add_data(message.from_user.id, "role", "message", "assistant", resp)
+        table_message.add_data_message(message.from_user.id, time(), "assistant", resp)
         table_users.update_data(message.from_user.id, "gpt_tokens", symbols + tokens)
         success, len_text = is_tts_symbol_limit(message, resp)
         if not success:
@@ -201,13 +203,14 @@ def handler_text(message):
     count_word_expletives(message.from_user.id, message.text)
     success, symbols = is_gpt_symbol_limit(message, message.text)
     if success:
-        table_message.add_data(message.from_user.id, "role", "message", "user", message.text)
+        table_message.add_data_message(message.from_user.id, time(), "user", message.text)
         success, resp, tokens = ask_gpt(message.from_user.id)
         if not success:
+            print(resp)
             logging.error(resp)
             bot.send_message(chat_id=message.chat.id, text="YaGPT оффлайн")
             return
-        table_message.add_data(message.from_user.id, "role", "message", "assistant", resp)
+        table_message.add_data_message(message.from_user.id, time(), "assistant", resp)
         table_users.update_data(message.from_user.id, "gpt_tokens", symbols + tokens)
         bot.send_message(chat_id=message.chat.id, text=resp)
     else:
@@ -216,10 +219,27 @@ def handler_text(message):
         bot.register_next_step_handler(message, handler_text)
 
 
+def schedule_runner():  # Функция, которая запускает бесконечный цикл с расписанием
+    while True:  # Уже знакомый тебе цикл
+        schedule.run_pending()
+        sleep(1)
+
+
+def reminder_user():
+    date_user = table_message.date_schedule()
+    for i in date_user:
+        if time() - i[1] >= 86400:
+            bot.send_message(i[0], 'Привет! Давно тебя не видно...\n Я Готов ответить тебе в любой момент.')
+
+
+schedule.every().day.at("15:30").do(reminder_user)
+
+
 @bot.message_handler(func=lambda: True)
 def handler(message):
     bot.send_message(message.from_user.id, "Отправь мне голосовое или текстовое сообщение, и я тебе отвечу")
 
 
 if __name__ == "__main__":
+    Thread(target=schedule_runner).start()
     bot.infinity_polling()

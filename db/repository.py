@@ -36,6 +36,13 @@ class DataBase:
 
         self.execute_query(sql_query, data)
 
+    def add_data_message(self, user_id, date, role, message):
+
+        sql_query = f'INSERT INTO {self.TABLE_NAME} (user_id, date, role, message) VALUES (?, ?, ?, ?);'
+        data = (user_id, date, role, message,)
+
+        self.execute_query(sql_query, data)
+
     def update_data(self, user_id, column, value):
 
         sql_query = f'UPDATE {self.TABLE_NAME} SET {column} = {column} + ? WHERE user_id = ?;'
@@ -70,3 +77,11 @@ class DataBase:
         if result and result[0]:
             return result[0]
         return 0
+
+    def date_schedule(self):
+        sql_query = f"""SELECT user_id, date, message
+        FROM {self.TABLE_NAME} 
+        WHERE id in (SELECT MAX(id) FROM {self.TABLE_NAME} WHERE role = "user" GROUP BY user_id)
+        ORDER BY date"""
+        result = self.execute_query(sql_query)
+        return result

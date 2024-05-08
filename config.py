@@ -5,6 +5,7 @@ load_dotenv()
 
 TOKEN = os.getenv('TOKEN')
 FOLDER_ID = os.getenv('FOLDER_ID')
+# /home/student/
 IAM_TOKEN_PATH = "/home/student/iam_token.txt"
 
 MAX_USER_STT_BLOCKS = 10
