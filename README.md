@@ -1,6 +1,7 @@
 # Бот-GPT-IN-TELEGRAM
  
 ТГ бот для запросов к YaGPT
+@Trainerpractickumbot
 
  
 ## Описание
