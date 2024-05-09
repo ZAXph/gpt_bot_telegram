@@ -2,10 +2,9 @@ import requests
 from config import VOICE, FOLDER_ID, URL_TTS
 from creds import get_creds
 
-IAM_TOKEN = get_creds()
-
 
 def speech_to_text(data):
+    IAM_TOKEN = get_creds()
     # Указываем параметры запроса
     params = "&".join([
         "topic=general",  # используем основную версию модели
@@ -35,6 +34,7 @@ def speech_to_text(data):
 
 
 def text_to_speech(text_user):
+    IAM_TOKEN = get_creds()
     headers = {'Authorization': f"Bearer {IAM_TOKEN}"}
     data = {'text': text_user,  # текст, который нужно преобразовать в голосовое сообщение
             'lang': 'ru-RU',  # язык текста - русский
