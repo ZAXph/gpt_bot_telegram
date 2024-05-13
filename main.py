@@ -92,16 +92,16 @@ def processing_voice(message):
         logging.warning("Пользователь отправил не голосовое сообщение")
         bot.register_next_step_handler(message, processing_voice)
     else:
-        success, amount_blocks = is_stt_block_limit(message, message.voice.duration)
-        if not success:
+        success_stt_block_limit, amount_blocks = is_stt_block_limit(message, message.voice.duration)
+        if not success_stt_block_limit:
             logging.warning("Слишком длинное голосовое сообщение")
             msg = bot.send_message(chat_id=message.chat.id, text="Поменяйте голосовое сообщение:")
             bot.register_next_step_handler(msg, processing_voice)
         else:  # получаем id голосового сообщения
             file_info = bot.get_file(message.voice.file_id)  # получаем информацию о голосовом сообщении
             file = bot.download_file(file_info.file_path)  # скачиваем голосовое сообщение
-            success, text = speech_to_text(file)
-            if success:
+            success_speech_to_text, text = speech_to_text(file)
+            if success_speech_to_text:
                 table_users.update_data(message.from_user.id, "blocks", amount_blocks)
                 bot.reply_to(message, text=text)
                 bot.send_message(chat_id=message.chat.id, text="Новый запрос: /stt")
@@ -123,21 +123,20 @@ def expectation_text(message):
         table_users.create_user(message.from_user.id, 0, 0, 0)
     elif not is_tts_symbol_limit(message, ""):
         logging.warning("У пользователя закончились токены")
-        print("У пользователя закончились токены")
         pass
     bot.send_message(chat_id=message.chat.id, text="Отправь свой текст")
     bot.register_next_step_handler(message, processing_text)
 
 
 def processing_text(message):
-    success, len_text = is_tts_symbol_limit(message, message.text)
-    if not success:
+    success_tts_symbol_limit, len_text = is_tts_symbol_limit(message, message.text)
+    if not success_tts_symbol_limit:
         logging.warning("Слишком длинное сообщение")
         msg = bot.send_message(chat_id=message.chat.id, text="Поменяйте текст:")
         bot.register_next_step_handler(msg, processing_text)
     else:
-        success, response = text_to_speech(message.text)
-        if success:
+        success_text_to_speech, response = text_to_speech(message.text)
+        if success_text_to_speech:
             table_users.update_data(message.from_user.id, "tokens", len_text)
             bot.send_voice(chat_id=message.chat.id, voice=response)
             bot.send_message(chat_id=message.chat.id, text="Новый запрос: /tts")
@@ -157,15 +156,15 @@ def handler_voice(message):
     if not result:
         table_users.create_user(message.from_user.id, 0, 0, 0)
         print("Добавление в базу данных")
-    success, amount_blocks = is_stt_block_limit(message, message.voice.duration)
-    if not success:
+    success_stt_block_limit, amount_blocks = is_stt_block_limit(message, message.voice.duration)
+    if not success_stt_block_limit:
         logging.warning("Кончились или превышены блоки")
         bot.send_message(chat_id=message.chat.id, text=amount_blocks)
     else:
         file_info = bot.get_file(message.voice.file_id)  # получаем информацию о голосовом сообщении
         file = bot.download_file(file_info.file_path)  # скачиваем голосовое сообщение
-        success, text = speech_to_text(file)
-        if success:
+        success_speech_to_text, text = speech_to_text(file)
+        if success_speech_to_text:
             processing_handler_voice(message, text, amount_blocks)
 
 
@@ -173,22 +172,22 @@ def processing_handler_voice(message, text, amount_blocks):
     table_users.update_data(message.from_user.id, "blocks", amount_blocks)
     table_message.add_data_message(message.from_user.id, time(), "user", text)
     count_word_expletives(message.from_user.id, text)
-    success, symbols = is_gpt_symbol_limit(message, text)
-    if success:
-        success, resp, tokens = ask_gpt(message.from_user.id)
-        if not success:
+    success_gpt_symbol_limit, symbols = is_gpt_symbol_limit(message, text)
+    if success_gpt_symbol_limit:
+        success_ask_gpt, resp, tokens = ask_gpt(message.from_user.id)
+        if not success_ask_gpt:
             logging.error(resp)
             bot.send_message(chat_id=message.chat.id, text="YaGPT оффлайн")
             return
         table_message.add_data_message(message.from_user.id, time(), "assistant", resp)
         table_users.update_data(message.from_user.id, "gpt_tokens", symbols + tokens)
-        success, len_text = is_tts_symbol_limit(message, resp)
-        if not success:
+        success_tts_symbol_limit, len_text = is_tts_symbol_limit(message, resp)
+        if not success_tts_symbol_limit:
             logging.warning("Кончились или превышены токены")
             bot.send_message(chat_id=message.chat.id, text=len_text)
         else:
-            success, response = text_to_speech(resp)
-            if success:
+            success_text_to_speech, response = text_to_speech(resp)
+            if success_text_to_speech:
                 table_users.update_data(message.from_user.id, "tokens", len_text)
                 bot.send_voice(chat_id=message.chat.id, voice=response)
             else:
@@ -210,11 +209,11 @@ def handler_text(message):
     if not result:
         table_users.create_user(message.from_user.id, 0, 0, 0)
     count_word_expletives(message.from_user.id, message.text)
-    success, symbols = is_gpt_symbol_limit(message, message.text)
-    if success:
+    success_gpt_symbol_limit, symbols = is_gpt_symbol_limit(message, message.text)
+    if success_gpt_symbol_limit:
         table_message.add_data_message(message.from_user.id, time(), "user", message.text)
-        success, resp, tokens = ask_gpt(message.from_user.id)
-        if not success:
+        success_ask_gpt, resp, tokens = ask_gpt(message.from_user.id)
+        if not success_ask_gpt:
             print(resp)
             logging.error(resp)
             bot.send_message(chat_id=message.chat.id, text="YaGPT оффлайн")
@@ -229,7 +228,7 @@ def handler_text(message):
 
 
 def schedule_runner():  # Функция, которая запускает бесконечный цикл с расписанием
-    while True:  # Уже знакомый тебе цикл
+    while True:
         schedule.run_pending()
         sleep(1)
 
