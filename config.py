@@ -6,8 +6,10 @@ load_dotenv()
 TOKEN = os.getenv('TOKEN')
 FOLDER_ID = os.getenv('FOLDER_ID')
 # /home/student/
+DB_NAME = '/home/student/data_base.db'
 IAM_TOKEN_PATH = "/home/student/iam_token.txt"
 
+COUNT_TOP_USER_WORDS = 5
 MAX_USER_STT_BLOCKS = 10
 MAX_STT_DURATION = 30
 MAX_USER_TTS_SYMBOLS = 2000

@@ -1,6 +1,8 @@
 from telebot import TeleBot
-from validators import is_stt_block_limit, is_tts_symbol_limit, \
-    is_gpt_symbol_limit, is_stt_block_limit_user
+from validators import (is_stt_block_limit,
+                        is_tts_symbol_limit,
+                        is_gpt_symbol_limit,
+                        is_stt_block_limit_user)
 from yacloud.speachkit import speech_to_text, text_to_speech
 from yacloud.gpt import ask_gpt
 import logging
@@ -10,8 +12,12 @@ import schedule
 from config import TOKEN, LOGS, MAX_USERS
 from word_expletives import count_word_expletives, top_user_words, text_create
 from db.repository import DataBase
-from db.schema import TABLE_NAME_USERS, USERS_TABLE_CREATE, TABLE_NAME_MESSAGE, \
-    MESSAGE_TABLE_CREATE, TABLE_NAME_WORD_EXPLETIVES, WORD_EXPLETIVES_TABLE_CREATE
+from db.schema import (TABLE_NAME_USERS,
+                       USERS_TABLE_CREATE,
+                       TABLE_NAME_MESSAGE,
+                       MESSAGE_TABLE_CREATE,
+                       TABLE_NAME_WORD_EXPLETIVES,
+                       WORD_EXPLETIVES_TABLE_CREATE)
 
 bot = TeleBot(token=TOKEN)
 table_users = DataBase(TABLE_NAME_USERS, USERS_TABLE_CREATE)
@@ -31,12 +37,12 @@ logging.basicConfig(
 
 @bot.message_handler(commands=['start'])
 def start(message):
-    bot.send_message(message.from_user.id, "Привет! Я могу сгенерировать пост для соцсетей по словестному описанию.")
+    bot.send_message(message.from_user.id, "Привет! Я Голосовой помощник, задавай любые вопросы.")
 
 
 @bot.message_handler(commands=['help'])
 def start(message):
-    bot.send_message(message.from_user.id, "Помогатор.")
+    bot.send_message(message.from_user.id, "Доступный команды:\n/stt - Голосовое сообщение в текст\n/tts - Текстовое сообщение в голосовое")
 
 
 @bot.message_handler(commands=['debug'])

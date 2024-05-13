@@ -1,4 +1,4 @@
-from config import expletives, LOGS
+from config import expletives, LOGS, COUNT_TOP_USER_WORDS
 from db.schema import TABLE_NAME_WORD_EXPLETIVES, WORD_EXPLETIVES_TABLE_CREATE
 from db.repository import DataBase
 from string import punctuation
@@ -31,7 +31,7 @@ def top_user_words(values):
             words[i[1]] = i[2]
     result = {}
     try:
-        for i in range(5):
+        for i in range(COUNT_TOP_USER_WORDS):
             key = max(words, key=words.get)
             result[key] = words[key]
             del words[key]

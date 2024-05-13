@@ -1,6 +1,6 @@
 import logging
 import sqlite3
-from db.schema import DB_NAME
+from config import DB_NAME
 
 
 class DataBase:
@@ -32,21 +32,21 @@ class DataBase:
     def add_data(self, user_id, column_1, column_2, value_1, value_2):
 
         sql_query = f'INSERT INTO {self.TABLE_NAME} (user_id, {column_1}, {column_2}) VALUES (?, ?, ?);'
-        data = (user_id, value_1, value_2,)
+        data = (user_id, value_1, value_2)
 
         self.execute_query(sql_query, data)
 
     def add_data_message(self, user_id, date, role, message):
 
         sql_query = f'INSERT INTO {self.TABLE_NAME} (user_id, date, role, message) VALUES (?, ?, ?, ?);'
-        data = (user_id, date, role, message,)
+        data = (user_id, date, role, message)
 
         self.execute_query(sql_query, data)
 
     def update_data(self, user_id, column, value):
 
         sql_query = f'UPDATE {self.TABLE_NAME} SET {column} = {column} + ? WHERE user_id = ?;'
-        data = (value, user_id,)
+        data = (value, user_id)
         self.execute_query(sql_query, data)
 
     def get_data(self, column, user_id=None):
@@ -68,7 +68,7 @@ class DataBase:
     def create_user(self, user_id, gpt_tokens, tokens, blocks):
 
         sql_query = f'INSERT INTO {self.TABLE_NAME} (user_id, gpt_tokens, tokens, blocks) VALUES (?, ?, ?, ?);'
-        data = (user_id, gpt_tokens, tokens, blocks, )
+        data = (user_id, gpt_tokens, tokens, blocks)
         self.execute_query(sql_query, data)
 
     def count_all_column(self, column):

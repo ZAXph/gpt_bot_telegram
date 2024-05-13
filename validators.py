@@ -36,12 +36,12 @@ def is_tts_symbol_limit(message, text):
 
     # Сравниваем all_symbols с количеством доступных пользователю символов
     if all_symbols > MAX_USER_TTS_SYMBOLS:
-        msg = f"Превышен общий лимит SpeechKit TTS {MAX_USER_TTS_SYMBOLS}. Использовано: {all_symbols - text_symbols} символов. Доступно: {MAX_USER_TTS_SYMBOLS - all_symbols + text_symbols}"
+        msg = f"Превышен общий лимит SpeechKit TTS {MAX_USER_TTS_SYMBOLS}. Использовано: {all_symbols - text_symbols} токенов. Доступно: {MAX_USER_TTS_SYMBOLS - all_symbols + text_symbols}"
         return False, msg
 
     # Сравниваем количество символов в тексте с максимальным количеством символов в тексте
     if text_symbols >= MAX_TTS_SYMBOLS:
-        msg = f"Превышен лимит SpeechKit TTS на запрос {MAX_TTS_SYMBOLS}, в сообщении {text_symbols} символов"
+        msg = f"Превышен лимит SpeechKit TTS на запрос {MAX_TTS_SYMBOLS}, в сообщении {text_symbols} токенов"
         return False, msg
 
     return True, text_symbols
