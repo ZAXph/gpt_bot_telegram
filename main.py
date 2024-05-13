@@ -1,4 +1,4 @@
-from telebot import TeleBot
+from telebot import TeleBot, apihelper
 from validators import (is_stt_block_limit,
                         is_tts_symbol_limit,
                         is_gpt_symbol_limit,
@@ -47,8 +47,11 @@ def start(message):
 
 @bot.message_handler(commands=['debug'])
 def debug(message):
-    with open(LOGS, "rb") as f:
-        bot.send_document(message.chat.id, f)
+    try:
+        with open(LOGS, "rb") as f:
+            bot.send_document(message.chat.id, f)
+    except apihelper.ApiTelegramException:
+        bot.send_message(message.chat.id, "Файл пуст")
 
 
 @bot.message_handler(commands=["get_top_for_me"])
