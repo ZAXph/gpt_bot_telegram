@@ -220,7 +220,6 @@ def handler_text(message):
     else:
         logging.warning("Кончились или превышены gpt-токены")
         bot.send_message(chat_id=message.chat.id, text=symbols)
-        bot.register_next_step_handler(message, handler_text)
 
 
 def schedule_runner():  # Функция, которая запускает бесконечный цикл с расписанием
