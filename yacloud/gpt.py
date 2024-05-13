@@ -17,8 +17,7 @@ def prompt_create(user_id):
     promt = []
     for msg in message:
         promt.append({"role": msg[0], "text": msg[1]})
-    print(promt)
-    return reversed(promt)
+    return promt
 
 
 # подсчитываем количество токенов в сообщениях
