@@ -110,12 +110,6 @@ def processing_voice(message):
                 bot.send_message(chat_id=message.chat.id, text=text)
 
 
-@bot.message_handler(commands=["start"])
-def start_bot(message):
-    bot.send_message(chat_id=message.chat.id,
-                     text="Привет! Доступна команда:\n/tts - После написания команды, отправь боту текст и он его озвучит.")
-
-
 @bot.message_handler(commands=["tts"])
 def expectation_text(message):
     result = table_users.get_data("user_id", message.from_user.id)
@@ -155,7 +149,6 @@ def handler_voice(message):
         return
     if not result:
         table_users.create_user(message.from_user.id, 0, 0, 0)
-        print("Добавление в базу данных")
     success_stt_block_limit, amount_blocks = is_stt_block_limit(message, message.voice.duration)
     if not success_stt_block_limit:
         logging.warning("Кончились или превышены блоки")
@@ -166,6 +159,9 @@ def handler_voice(message):
         success_speech_to_text, text = speech_to_text(file)
         if success_speech_to_text:
             processing_handler_voice(message, text, amount_blocks)
+        else:
+            bot.send_message(message.from_user.id, text)
+            logging.error(text)
 
 
 def processing_handler_voice(message, text, amount_blocks):
