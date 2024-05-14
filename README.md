@@ -1,4 +1,4 @@
-# Бот-GPT-IN-TELEGRAM
+# Бот - Голосовой помощник
  
 ТГ бот для запросов к YaGPT
 @Trainerpractickumbot
