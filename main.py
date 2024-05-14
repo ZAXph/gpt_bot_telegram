@@ -42,7 +42,8 @@ def start(message):
 
 @bot.message_handler(commands=['help'])
 def start(message):
-    bot.send_message(message.from_user.id, "Доступный команды:\n/stt - Голосовое сообщение в текст\n/tts - Текстовое сообщение в голосовое")
+    bot.send_message(message.from_user.id, "Доступный команды:\n/stt - Голосовое сообщение в текст\n/tts - Текстовое сообщение в голосовое"
+                                           "\n/get_top_for_me - Личный топ слов паразитов\n/get_top - Общий топ слов паразитов")
 
 
 @bot.message_handler(commands=['debug'])
