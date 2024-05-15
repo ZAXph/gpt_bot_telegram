@@ -15,7 +15,7 @@ logging.basicConfig(
 
 
 def count_word_expletives(user_id, text):
-    text = text.lower().translate(str.maketrans('', '', punctuation))
+    text = text.translate(str.maketrans('', '', punctuation)).lower()
     for word in expletives:
         count = text.count(word)
         if count != 0:
@@ -25,10 +25,11 @@ def count_word_expletives(user_id, text):
 def top_user_words(values):
     words = {}
     for i in values:
-        if i[1] in words.values():
+        if i[1] in words:
             words[i[1]] += i[2]
         else:
             words[i[1]] = i[2]
+    print(words)
     result = {}
     try:
         for i in range(COUNT_TOP_USER_WORDS):
