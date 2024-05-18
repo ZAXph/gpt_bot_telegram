@@ -85,3 +85,8 @@ class DataBase:
         ORDER BY date"""
         result = self.execute_query(sql_query)
         return result
+
+    def delete_user_data(self, user_id):
+        sql_query = f'DELETE FROM {self.TABLE_NAME} WHERE user_id = ?'
+        data = (user_id,)
+        self.execute_query(sql_query, data)

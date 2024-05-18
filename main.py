@@ -43,7 +43,7 @@ def start(message):
 @bot.message_handler(commands=['help'])
 def help_telegram(message):
     bot.send_message(message.from_user.id, "Доступные команды:\n/stt - Голосовое сообщение в текст\n/tts - Текстовое сообщение в голосовое"
-                                           "\n/get_top_for_me - Личный топ слов паразитов\n/get_top - Общий топ слов паразитов")
+                                           "\n/get_top_for_me - Личный топ слов паразитов\n/get_top - Общий топ слов паразитов\n/delete - Очистка истории запросов")
 
 
 @bot.message_handler(commands=['debug'])
@@ -72,6 +72,12 @@ def handler_top_me(message):
     result = top_user_words(result)
     text = "TOP WORDS EXPLETIVES ALL USERS: "
     bot.send_message(chat_id=message.chat.id, text=text_create(text, result))
+
+
+@bot.message_handler(commands=["delete"])
+def handler_top_me(message):
+    table_message.delete_user_data(message.from_user.id)
+    bot.send_message(chat_id=message.chat.id, text="Вы очистили историю запросов")
 
 
 @bot.message_handler(commands=["stt"])
